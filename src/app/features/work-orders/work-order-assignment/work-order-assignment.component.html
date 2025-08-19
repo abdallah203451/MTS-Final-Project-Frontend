@@ -1,0 +1,49 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Assign Work Order</mat-card-title>
+    <mat-card-subtitle
+      >Select a technician — the system will pick the first free
+      interval</mat-card-subtitle
+    >
+  </mat-card-header>
+
+  <mat-card-content>
+    <mat-form-field appearance="outline" class="fullwidth">
+      <mat-label>Technician</mat-label>
+      <mat-select [(ngModel)]="selectedTechId">
+        <mat-option *ngFor="let t of technicians" [value]="t.employeeId">
+          {{ t.name }} — {{ t.phoneNumber }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="actions">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="assign()"
+        [disabled]="!selectedTechId"
+      >
+        Assign
+      </button>
+      <button
+        mat-button
+        (click)="router.navigate(['/work-orders', workOrderId])"
+      >
+        Back
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<style>
+  .fullwidth {
+    width: 100%;
+  }
+  .actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+</style>

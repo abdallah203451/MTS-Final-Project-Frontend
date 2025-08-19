@@ -1,0 +1,49 @@
+<mat-card *ngIf="work; else l">
+  <mat-card-header>
+    <mat-card-title>{{ work.title }}</mat-card-title>
+    <mat-card-subtitle
+      >Order #{{ work.workOrderId }} —
+      {{ work.proposedSchedulingDate | date }}</mat-card-subtitle
+    >
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      <strong>Customer:</strong> {{ work.customerName }} —
+      {{ work.customerMobile }}
+    </p>
+    <p *ngIf="work.customerEmail">
+      <strong>Email:</strong> {{ work.customerEmail }}
+    </p>
+    <p *ngIf="work.customerAddress">
+      <strong>Address:</strong> {{ work.customerAddress }}
+    </p>
+    <p><strong>Description:</strong></p>
+    <p class="muted">{{ work.description }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-flat-button color="primary" (click)="goToAssign()">
+      <mat-icon>schedule</mat-icon> Assign
+    </button>
+    <button
+      mat-button
+      (click)="router.navigate(['/work-orders', work.workOrderId, 'edit'])"
+    >
+      <mat-icon>edit</mat-icon> Edit
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+<ng-template #l>
+  <div class="loading">Loading…</div>
+</ng-template>
+
+<style>
+  .muted {
+    color: rgba(0, 0, 0, 0.7);
+    white-space: pre-wrap;
+  }
+  .loading {
+    padding: 24px;
+    text-align: center;
+  }
+</style>

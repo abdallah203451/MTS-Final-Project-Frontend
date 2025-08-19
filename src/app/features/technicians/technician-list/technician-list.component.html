@@ -1,0 +1,34 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Technicians</mat-card-title>
+    <mat-card-subtitle>Manage your team</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="toolbar">
+      <button mat-flat-button color="primary" (click)="create()">
+        <mat-icon>person_add</mat-icon> New
+      </button>
+    </div>
+    <mat-list>
+      <mat-list-item *ngFor="let t of techs">
+        <mat-icon matListIcon>engineering</mat-icon>
+        <div matLine>{{ t.name }}</div>
+        <div matLine class="muted">{{ t.email }} • {{ t.phoneNumber }}</div>
+        <button mat-icon-button (click)="view(t.employeeId)" matTooltip="View">
+          <mat-icon>visibility</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
+
+<style>
+  .toolbar {
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .muted {
+    color: rgba(0, 0, 0, 0.6);
+  }
+</style>
