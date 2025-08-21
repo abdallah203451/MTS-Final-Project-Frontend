@@ -1,62 +1,141 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Create Technician</mat-card-title>
-  </mat-card-header>
-
-  <mat-card-content>
-    <form [formGroup]="form" (ngSubmit)="create()" class="form-grid">
-      <mat-form-field appearance="outline">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Phone</mat-label>
-        <input matInput formControlName="phoneNumber" />
-      </mat-form-field>
-
-      <div class="actions">
-        <button
-          mat-flat-button
-          color="primary"
-          type="submit"
-          [disabled]="saving || form.invalid"
-        >
-          Create
-        </button>
-        <button
-          mat-button
-          type="button"
-          (click)="router.navigate(['/technicians'])"
-        >
-          Cancel
-        </button>
+<div class="create-container">
+  <div class="create-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="create-title">Create New Technician</h1>
+        <p class="create-meta">
+          Add a new technician to the workforce management system
+        </p>
       </div>
-    </form>
-  </mat-card-content>
-</mat-card>
+      <div class="status-section">
+        <mat-chip class="status-chip create-chip">
+          <mat-icon class="status-icon">person_add</mat-icon>
+          New Registration
+        </mat-chip>
+      </div>
+    </div>
+  </div>
 
-<style>
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  .actions {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 8px;
-  }
-</style>
+  <div class="form-container">
+    <mat-card class="create-card">
+      <div class="card-header">
+        <div class="card-icon create-icon">
+          <mat-icon>engineering</mat-icon>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">Technician Information</h3>
+          <p class="card-subtitle">
+            Enter the required details to create a new technician profile
+          </p>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <form [formGroup]="form" (ngSubmit)="create()" class="technician-form">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Full Name</mat-label>
+              <input
+                matInput
+                formControlName="name"
+                placeholder="Enter technician's full name"
+              />
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="form.get('name')?.hasError('required')">
+                Full name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Phone Number</mat-label>
+              <input
+                matInput
+                formControlName="phoneNumber"
+                placeholder="Enter phone number"
+              />
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">
+                Phone number is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Email Address</mat-label>
+              <input
+                matInput
+                type="email"
+                formControlName="email"
+                placeholder="Enter email address"
+              />
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="form.get('email')?.hasError('required')">
+                Email is required
+              </mat-error>
+              <mat-error *ngIf="form.get('email')?.hasError('email')">
+                Please enter a valid email address
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Password</mat-label>
+              <input
+                matInput
+                [type]="hidePassword ? 'password' : 'text'"
+                formControlName="password"
+                placeholder="Create a secure password"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                (click)="hidePassword = !hidePassword"
+                type="button"
+              >
+                <mat-icon>{{
+                  hidePassword ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+              <mat-error *ngIf="form.get('password')?.hasError('required')">
+                Password is required
+              </mat-error>
+              <mat-error *ngIf="form.get('password')?.hasError('minlength')">
+                Password must be at least 6 characters
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-actions">
+            <button
+              mat-flat-button
+              type="submit"
+              class="create-btn"
+              [disabled]="saving || form.invalid"
+            >
+              <mat-spinner
+                *ngIf="saving"
+                diameter="20"
+                class="btn-spinner"
+              ></mat-spinner>
+              <mat-icon *ngIf="!saving">person_add</mat-icon>
+              <span>{{ saving ? "Creating..." : "Create Technician" }}</span>
+            </button>
+
+            <button
+              mat-stroked-button
+              type="button"
+              class="cancel-btn"
+              (click)="router.navigate(['/technicians'])"
+              [disabled]="saving"
+            >
+              <mat-icon>cancel</mat-icon>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card>
+  </div>
+</div>

@@ -14,21 +14,21 @@ export class EmployeeService {
 
   // Get all employees
   getAllEmployees(): Observable<EmployeeDTO[]> {
-    return this.http.get<EmployeeDTO[]>(`${this.apiUrl}/employees`);
+    return this.http.get<EmployeeDTO[]>(`${this.apiUrl}/technicians`);
   }
 
   // Get employee by ID
   getEmployeeById(id: number): Observable<EmployeeDTO> {
-    return this.http.get<EmployeeDTO>(`${this.apiUrl}/employees/${id}`);
+    return this.http.get<EmployeeDTO>(`${this.apiUrl}/technicians/${id}`);
   }
 
   // Create technician
   createTechnician(technician: CreateTechnicianDTO): Observable<EmployeeDTO> {
-    return this.http.post<EmployeeDTO>(`${this.apiUrl}/employees/technicians`, technician);
+    return this.http.post<EmployeeDTO>(`${this.apiUrl}/technicians`, technician);
   }
 
   // Get available employees for a specific date
   getAvailableEmployees(date: string): Observable<AvailableEmployeeDTO[]> {
-    return this.http.get<AvailableEmployeeDTO[]>(`${this.apiUrl}/assignment-controller/getAvailableEmployees?date=${date}`);
+    return this.http.get<AvailableEmployeeDTO[]>(`${this.apiUrl}/assignments/available-employees?date=${date}`);
   }
 }

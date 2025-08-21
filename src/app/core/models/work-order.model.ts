@@ -24,6 +24,7 @@ export interface WorkOrderCreateDTO {
 }
 
 export interface WorkOrderUpdateDTO {
+  title?: string;
   description?: string;
   customerName: string;
   customerMobile: string;

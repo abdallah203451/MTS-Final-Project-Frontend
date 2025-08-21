@@ -1,1 +1,103 @@
-<router-outlet></router-outlet>
+<!-- show only the auth page when on /auth/* -->
+<ng-container *ngIf="isAuthRoute; else appLayout">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<!-- main app layout (hidden on auth pages) -->
+<ng-template #appLayout>
+  <div class="dashboard-container">
+    <mat-toolbar class="modern-toolbar">
+      <button mat-icon-button (click)="toggleSidenav()" class="menu-btn">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <div class="toolbar-brand">
+        <mat-icon class="brand-icon">work</mat-icon>
+        <span class="toolbar-title">Workforce Management</span>
+      </div>
+
+      <span class="spacer"></span>
+
+      <div class="user-section">
+        <button
+          mat-button
+          [matMenuTriggerFor]="userMenu"
+          class="user-menu-button"
+        >
+          <div class="user-avatar">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+          <span class="username">{{ userName }}</span>
+          <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
+        </button>
+
+        <mat-menu #userMenu="matMenu" class="user-menu">
+          <button mat-menu-item class="menu-item">
+            <mat-icon>person</mat-icon>
+            <span>Profile</span>
+          </button>
+          <button mat-menu-item (click)="logout()" class="menu-item">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </mat-toolbar>
+
+    <mat-sidenav-container class="sidenav-container">
+      <mat-sidenav [opened]="isSidenavOpen" mode="side" class="modern-sidenav">
+        <div class="sidenav-header">
+          <div class="nav-logo">
+            <mat-icon>dashboard</mat-icon>
+            <span>Navigation</span>
+          </div>
+        </div>
+
+        <mat-nav-list class="nav-list">
+          <a
+            mat-list-item
+            routerLink="/dashboard"
+            routerLinkActive="active-nav-item"
+            class="nav-item"
+          >
+            <div class="nav-item-content">
+              <mat-icon class="nav-icon">dashboard</mat-icon>
+              <span class="nav-text">Dashboard</span>
+            </div>
+          </a>
+
+          <a
+            mat-list-item
+            routerLink="/work-orders"
+            routerLinkActive="active-nav-item"
+            class="nav-item"
+          >
+            <div class="nav-item-content">
+              <mat-icon class="nav-icon">assignment</mat-icon>
+              <span class="nav-text">Work Orders</span>
+            </div>
+          </a>
+
+          <!-- Technician link only shown for admin/team-leader -->
+          <a
+            mat-list-item
+            *ngIf="isAdmin"
+            routerLink="/technicians"
+            routerLinkActive="active-nav-item"
+            class="nav-item"
+          >
+            <div class="nav-item-content">
+              <mat-icon class="nav-icon">engineering</mat-icon>
+              <span class="nav-text">Technicians</span>
+            </div>
+          </a>
+        </mat-nav-list>
+      </mat-sidenav>
+
+      <mat-sidenav-content class="main-content">
+        <!-- the only outlet where the app pages (dashboard, work-orders, etc.) are rendered -->
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+</ng-template>

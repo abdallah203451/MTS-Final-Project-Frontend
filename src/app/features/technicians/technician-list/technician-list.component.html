@@ -1,34 +1,102 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Technicians</mat-card-title>
-    <mat-card-subtitle>Manage your team</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="toolbar">
-      <button mat-flat-button color="primary" (click)="create()">
-        <mat-icon>person_add</mat-icon> New
+<div class="technician-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Team Management</h1>
+      <p class="page-subtitle">
+        Manage your skilled technicians and track their availability
+      </p>
+    </div>
+    <div class="header-actions">
+      <button mat-flat-button class="create-btn" (click)="create()">
+        <mat-icon>person_add</mat-icon>
+        Add New Technician
       </button>
     </div>
-    <mat-list>
-      <mat-list-item *ngFor="let t of techs">
-        <mat-icon matListIcon>engineering</mat-icon>
-        <div matLine>{{ t.name }}</div>
-        <div matLine class="muted">{{ t.email }} • {{ t.phoneNumber }}</div>
-        <button mat-icon-button (click)="view(t.employeeId)" matTooltip="View">
-          <mat-icon>visibility</mat-icon>
-        </button>
-      </mat-list-item>
-    </mat-list>
-  </mat-card-content>
-</mat-card>
+  </div>
 
-<style>
-  .toolbar {
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .muted {
-    color: rgba(0, 0, 0, 0.6);
-  }
-</style>
+  <mat-card class="technician-card">
+    <div class="card-header">
+      <div class="header-icon">
+        <mat-icon>groups</mat-icon>
+      </div>
+      <div class="header-text">
+        <h2 class="card-title">Your Technical Team</h2>
+        <p class="card-subtitle">
+          {{ techs.length }} active technician{{
+            techs.length !== 1 ? "s" : ""
+          }}
+        </p>
+      </div>
+      <div class="team-stats">
+        <div class="stat-item">
+          <mat-icon>engineering</mat-icon>
+          <span class="stat-number">{{ techs.length }}</span>
+          <span class="stat-label">Technicians</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="technician-grid">
+      <div
+        *ngFor="let t of techs; "
+        class="technician-item"
+      >
+        <div class="tech-card">
+          <div class="tech-header">
+            <div class="tech-avatar">
+              <mat-icon>engineering</mat-icon>
+            </div>
+            <div class="status-indicator">
+              <div class="status-dot active"></div>
+              <span class="status-text">Available</span>
+            </div>
+          </div>
+
+          <div class="tech-info">
+            <h3 class="tech-name">{{ t.name }}</h3>
+            <div class="tech-contact">
+              <div class="contact-item">
+                <mat-icon>email</mat-icon>
+                <span>{{ t.email }}</span>
+              </div>
+              <div class="contact-item">
+                <mat-icon>phone</mat-icon>
+                <span>{{ t.phoneNumber }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tech-actions">
+            <button
+              mat-flat-button
+              class="view-btn"
+              (click)="view(t.employeeId)"
+              matTooltip="View Details"
+            >
+              <mat-icon>visibility</mat-icon>
+              View Profile
+            </button>
+          </div>
+
+          <div class="card-overlay"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="techs.length === 0">
+      <div class="empty-content">
+        <div class="empty-icon">
+          <mat-icon>engineering_off</mat-icon>
+        </div>
+        <h3 class="empty-title">No Technicians Yet</h3>
+        <p class="empty-text">
+          Start building your team by adding your first technician
+        </p>
+        <button mat-flat-button class="add-first-btn" (click)="create()">
+          <mat-icon>person_add</mat-icon>
+          Add First Technician
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>

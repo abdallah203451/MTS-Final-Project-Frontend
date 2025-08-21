@@ -1,46 +1,157 @@
-<mat-card *ngIf="tech">
-  <mat-card-header>
-    <mat-card-title>{{ tech.name }}</mat-card-title>
-    <mat-card-subtitle
-      >{{ tech.email }} • {{ tech.phoneNumber }}</mat-card-subtitle
-    >
-  </mat-card-header>
+<div class="technician-detail-container" *ngIf="tech; else loadingTemplate">
+  <div class="detail-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="technician-name">{{ tech.name }}</h1>
+        <p class="technician-meta">{{ tech.email }} • {{ tech.phoneNumber }}</p>
+      </div>
+      <div class="status-section">
+        <mat-chip class="status-chip active-chip">
+          <mat-icon class="status-icon">person</mat-icon>
+          Active Technician
+        </mat-chip>
+      </div>
+    </div>
+  </div>
 
-  <mat-card-content>
-    <h3>Availability (next days)</h3>
-    <mat-list *ngIf="slots?.length; else none">
-      <mat-list-item *ngFor="let d of slots">
-        <div matLine>
-          <strong>{{ d.date | date }}</strong>
+  <div class="detail-grid">
+    <!-- Technician Info Card -->
+    <mat-card class="info-card technician-card">
+      <div class="card-header">
+        <div class="card-icon technician-icon">
+          <mat-icon>engineering</mat-icon>
         </div>
-        <div matLine class="muted">
-          <span *ngFor="let iv of d.intervals">
-            <mat-icon inline *ngIf="iv.available">check_circle</mat-icon>
-            <mat-icon inline *ngIf="!iv.available">block</mat-icon>
-            {{ iv.label }}
-            <span class="gap"></span>
-          </span>
+        <div class="card-title-section">
+          <h3 class="card-title">Technician Information</h3>
+          <p class="card-subtitle">Contact details and professional info</p>
         </div>
-      </mat-list-item>
-    </mat-list>
-    <ng-template #none>
-      <p class="muted">No availability data</p>
-    </ng-template>
-  </mat-card-content>
+      </div>
+      <div class="card-content">
+        <div class="info-row">
+          <div class="info-item">
+            <mat-icon class="info-icon">account_circle</mat-icon>
+            <div class="info-content">
+              <span class="info-label">Full Name</span>
+              <span class="info-value">{{ tech.name }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon class="info-icon">phone</mat-icon>
+            <div class="info-content">
+              <span class="info-label">Phone Number</span>
+              <span class="info-value">{{ tech.phoneNumber }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-item full-width">
+            <mat-icon class="info-icon">email</mat-icon>
+            <div class="info-content">
+              <span class="info-label">Email Address</span>
+              <span class="info-value">{{ tech.email }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
 
-  <mat-card-actions>
-    <button mat-button (click)="navigateToTechnicians()">Back</button>
-  </mat-card-actions>
-</mat-card>
+    <!-- Availability Card -->
+    <!-- <mat-card class="info-card availability-card">
+      <div class="card-header">
+        <div class="card-icon availability-icon">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">Availability Schedule</h3>
+          <p class="card-subtitle">Next 7 days availability</p>
+        </div>
+      </div>
+      <div class="card-content">
+        <div
+          class="availability-section"
+          *ngIf="slots?.length; else noAvailability"
+        >
+          <div class="availability-list">
+            <div class="availability-item" *ngFor="let d of slots">
+              <div class="date-header">
+                <mat-icon>calendar_today</mat-icon>
+                <strong>{{ d.date | date : "EEEE, MMM d" }}</strong>
+              </div>
+              <div class="intervals-container">
+                <div
+                  class="interval-chip"
+                  *ngFor="let iv of d.intervals"
+                  [ngClass]="{
+                    'available-slot': iv.available,
+                    'unavailable-slot': !iv.available
+                  }"
+                >
+                  <mat-icon>{{
+                    iv.available ? "check_circle" : "block"
+                  }}</mat-icon>
+                  <span>{{ iv.label }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noAvailability>
+          <div class="no-data">
+            <mat-icon class="no-data-icon">event_busy</mat-icon>
+            <p class="no-data-text">No availability data found</p>
+          </div>
+        </ng-template>
+      </div>
+    </mat-card> -->
 
-<style>
-  .muted {
-    color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .gap {
-    margin-right: 12px;
-  }
-</style>
+    <!-- Actions Card -->
+    <!-- <mat-card class="info-card actions-card">
+      <div class="card-header">
+        <div class="card-icon actions-icon">
+          <mat-icon>settings</mat-icon>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">Actions</h3>
+          <p class="card-subtitle">Manage technician profile</p>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="action-buttons">
+          <button mat-flat-button class="edit-btn">
+            <mat-icon>edit</mat-icon>
+            Edit Profile
+          </button>
+
+          <button mat-flat-button class="schedule-btn">
+            <mat-icon>event</mat-icon>
+            View Schedule
+          </button>
+
+          <button
+            mat-stroked-button
+            class="back-btn"
+            (click)="navigateToTechnicians()"
+          >
+            <mat-icon>arrow_back</mat-icon>
+            Back to List
+          </button>
+        </div>
+      </div>
+    </mat-card> -->
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="loading-container">
+    <div class="loading-content">
+      <div class="loading-spinner">
+        <mat-progress-spinner
+          diameter="60"
+          mode="indeterminate"
+        ></mat-progress-spinner>
+      </div>
+      <h2 class="loading-title">Loading Technician Details</h2>
+      <p class="loading-text">Fetching profile information...</p>
+    </div>
+  </div>
+</ng-template>

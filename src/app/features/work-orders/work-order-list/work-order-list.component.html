@@ -1,125 +1,248 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Work Orders</mat-card-title>
-    <mat-card-subtitle>Search and manage work orders</mat-card-subtitle>
-  </mat-card-header>
-
-  <mat-card-content>
-    <div class="toolbar-row">
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Search</mat-label>
-        <input
-          matInput
-          placeholder="title, customer name or mobile"
-          [(ngModel)]="searchQ"
-          (keyup.enter)="search()"
-        />
-        <button
-          mat-icon-button
-          matSuffix
-          aria-label="clear"
-          *ngIf="searchQ"
-          (click)="clear()"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-
-      <span class="spacer"></span>
-
-      <button mat-flat-button color="primary" (click)="create()">
-        <mat-icon>add</mat-icon> New Work Order
+<div class="work-orders-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Work Orders</h1>
+      <p class="page-subtitle">
+        Manage and track all your service requests efficiently
+      </p>
+    </div>
+    <div class="header-actions">
+      <button mat-flat-button class="create-btn" (click)="create()">
+        <mat-icon>add_circle</mat-icon>
+        New Work Order
       </button>
     </div>
+  </div>
 
-    <div class="table-wrap" *ngIf="!loading; else loadingTpl">
-      <table
-        mat-table
-        [dataSource]="workOrders"
-        class="mat-elevation-z2 full-width"
-      >
+  <mat-card class="search-card">
+    <div class="search-section">
+      <div class="search-wrapper">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search work orders</mat-label>
+          <input
+            matInput
+            placeholder="Search by title, customer name, or mobile number"
+            [(ngModel)]="searchQ"
+            (keyup.enter)="search()"
+          />
+          <mat-icon matPrefix class="search-icon">search</mat-icon>
+          <button
+            mat-icon-button
+            matSuffix
+            aria-label="clear"
+            *ngIf="searchQ"
+            (click)="clear()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <button mat-flat-button class="search-btn" (click)="search()">
+          <mat-icon>search</mat-icon>
+          Search
+        </button>
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="table-card">
+    <div class="table-header">
+      <h2 class="table-title">All Work Orders</h2>
+      <div class="table-stats">
+        <span class="stats-badge">{{ workOrders.length }} orders</span>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="workOrders" class="modern-table">
         <ng-container matColumnDef="workOrderId">
-          <th mat-header-cell *matHeaderCellDef>ID</th>
-          <td mat-cell *matCellDef="let row">{{ row.workOrderId }}</td>
+          <th mat-header-cell *matHeaderCellDef class="table-header-cell">
+            <div class="header-content">
+              <mat-icon class="header-icon">tag</mat-icon>
+              <span>ID</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell">
+            <span class="id-badge">#{{ row.workOrderId }}</span>
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>Title</th>
-          <td mat-cell *matCellDef="let row">{{ row.title }}</td>
+          <th mat-header-cell *matHeaderCellDef class="table-header-cell">
+            <div class="header-content">
+              <mat-icon class="header-icon">title</mat-icon>
+              <span>Title</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell">
+            <div class="title-cell">
+              <span class="title-text">{{ row.title }}</span>
+            </div>
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="customerName">
-          <th mat-header-cell *matHeaderCellDef>Customer</th>
-          <td mat-cell *matCellDef="let row">{{ row.customerName }}</td>
+          <th mat-header-cell *matHeaderCellDef class="table-header-cell">
+            <div class="header-content">
+              <mat-icon class="header-icon">person</mat-icon>
+              <span>Customer</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell">
+            <div class="customer-cell">
+              <div class="customer-avatar">
+                <mat-icon>account_circle</mat-icon>
+              </div>
+              <span class="customer-name">{{ row.customerName }}</span>
+            </div>
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="proposedSchedulingDate">
-          <th mat-header-cell *matHeaderCellDef>Date</th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.proposedSchedulingDate | date }}
+          <th mat-header-cell *matHeaderCellDef class="table-header-cell">
+            <div class="header-content">
+              <mat-icon class="header-icon">event</mat-icon>
+              <span>Scheduled Date</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell">
+            <div class="date-cell">
+              <mat-icon class="date-icon">schedule</mat-icon>
+              <span class="date-text">{{
+                row.proposedSchedulingDate | date : "MMM d, y"
+              }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef class="table-header-cell">
+            <div class="header-content">
+              <mat-icon class="header-icon">flag</mat-icon>
+              <span>Status</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell">
+            <mat-chip
+              class="status-chip"
+              [ngClass]="{
+                'status-assigned': row.status === 'Assigned',
+                'status-not-assigned': row.status === 'NotAssigned',
+                'status-completed': row.status === 'Completed',
+                'status-cancelled': row.status === 'Cancelled'
+              }"
+            >
+              <!-- <mat-icon class="status-icon">
+                {{
+                  row.status === "Assigned"
+                    ? "check_circle"
+                    : row.status === "NotAssigned"
+                    ? "pending"
+                    : row.status === "Completed"
+                    ? "task_alt"
+                    : "cancel"
+                }}
+              </mat-icon> -->
+              {{ statusLabel(row.status) }}
+            </mat-chip>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="createdByName">
-          <th mat-header-cell *matHeaderCellDef>Created By</th>
-          <td mat-cell *matCellDef="let row">{{ row.createdByName }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let row">
-            <button
-              mat-icon-button
-              color="primary"
-              (click)="view(row.workOrderId)"
-              matTooltip="View"
-            >
-              <mat-icon>visibility</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="accent"
-              (click)="edit(row.workOrderId)"
-              matTooltip="Edit"
-            >
-              <mat-icon>edit</mat-icon>
-            </button>
+          <th mat-header-cell *matHeaderCellDef class="table-header-cell">
+            <div class="header-content">
+              <mat-icon class="header-icon">person_add</mat-icon>
+              <span>Created By</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell">
+            <div class="created-by-cell">
+              <div class="creator-avatar">
+                <mat-icon>face</mat-icon>
+              </div>
+              <span class="creator-name">{{ row.createdByName }}</span>
+            </div>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    </div>
+        <!-- <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="table-header-cell actions-header"
+          >
+            <div class="header-content">
+              <mat-icon class="header-icon">settings</mat-icon>
+              <span>Actions</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="table-cell actions-cell">
+            <div class="action-buttons"></div></td
+        ></ng-container> -->
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="table-header-cell actions-header"
+          >
+            <div class="header-content">
+              <mat-icon class="header-icon">settings</mat-icon>
+              <span>Actions</span>
+            </div>
+          </th>
 
-    <ng-template #loadingTpl>
-      <div class="loading"><mat-icon>hourglass_top</mat-icon> Loading...</div>
-    </ng-template>
-  </mat-card-content>
-</mat-card>
+          <td mat-cell *matCellDef="let row" class="table-cell actions-cell">
+            <div class="action-buttons">
+              <!-- View -->
+              <button
+                mat-icon-button
+                aria-label="view"
+                (click)="
+                  row?.workOrderId && view(row.workOrderId);
+                  $event.stopPropagation()
+                "
+                matTooltip="View"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
 
-<style>
-  .toolbar-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-  .search-field {
-    width: 380px;
-  }
-  .spacer {
-    flex: 1 1 auto;
-  }
-  .table-wrap {
-    overflow: auto;
-  }
-  .full-width {
-    width: 100%;
-  }
-  .loading {
-    text-align: center;
-    padding: 24px;
-    color: rgba(0, 0, 0, 0.6);
-  }
-</style>
+              <!-- Edit -->
+              <button
+                mat-icon-button
+                aria-label="edit"
+                (click)="
+                  row?.workOrderId && edit(row.workOrderId);
+                  $event.stopPropagation()
+                "
+                matTooltip="Edit"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <!-- Force Cancel (only when allowed) -->
+              <button
+                *ngIf="showForceCancel(row)"
+                mat-icon-button
+                color="warn"
+                aria-label="force-cancel"
+                (click)="onForceCancel(row); $event.stopPropagation()"
+                matTooltip="Force Cancel"
+              >
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns"
+          class="mat-header-row"
+        ></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="mat-row"
+        ></tr>
+      </table></div
+  ></mat-card>
+</div>

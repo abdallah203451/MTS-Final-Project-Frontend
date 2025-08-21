@@ -10,6 +10,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatChip } from "@angular/material/chips";
 
 @Component({
   selector: 'app-technician-detail',
@@ -22,7 +24,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatSnackBarModule,
     MatIconModule,
-  ],
+    MatProgressSpinner,
+    MatChip
+],
   templateUrl: './technician-detail.component.html',
   styleUrls: ['./technician-detail.component.css'],
 })
@@ -63,7 +67,7 @@ export class TechnicianDetailComponent implements OnInit {
     this.assignmentSvc.getAvailableDates().subscribe({
       next: (days) => {
         // server may return availability across technicians — filter if necessary
-        this.slots = days; // best-effort; adapt if backend endpoint differs
+        this.slots = days as unknown as DaySlotsDTO[]; // best-effort; adapt if backend endpoint differs
       },
       error: (err) => console.error(err),
     });

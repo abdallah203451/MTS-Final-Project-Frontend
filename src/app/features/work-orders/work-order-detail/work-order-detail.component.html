@@ -1,49 +1,225 @@
-<mat-card *ngIf="work; else l">
-  <mat-card-header>
-    <mat-card-title>{{ work.title }}</mat-card-title>
-    <mat-card-subtitle
-      >Order #{{ work.workOrderId }} —
-      {{ work.proposedSchedulingDate | date }}</mat-card-subtitle
-    >
-  </mat-card-header>
-  <mat-card-content>
-    <p>
-      <strong>Customer:</strong> {{ work.customerName }} —
-      {{ work.customerMobile }}
-    </p>
-    <p *ngIf="work.customerEmail">
-      <strong>Email:</strong> {{ work.customerEmail }}
-    </p>
-    <p *ngIf="work.customerAddress">
-      <strong>Address:</strong> {{ work.customerAddress }}
-    </p>
-    <p><strong>Description:</strong></p>
-    <p class="muted">{{ work.description }}</p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-flat-button color="primary" (click)="goToAssign()">
-      <mat-icon>schedule</mat-icon> Assign
-    </button>
-    <button
-      mat-button
-      (click)="router.navigate(['/work-orders', work.workOrderId, 'edit'])"
-    >
-      <mat-icon>edit</mat-icon> Edit
-    </button>
-  </mat-card-actions>
-</mat-card>
+<div class="detail-container" *ngIf="work; else loadingTemplate">
+  <div class="detail-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="order-title">{{ work.title }}</h1>
+        <p class="order-meta">
+          Order #{{ work.workOrderId }} •
+          {{ work.proposedSchedulingDate | date : "EEEE, MMM d, y" }}
+        </p>
+      </div>
+      <div class="status-section">
+        <mat-chip
+          class="status-chip"
+          [ngClass]="{
+            'status-assigned': work.status === 'Assigned',
+            'status-not-assigned': work.status === 'NotAssigned',
+            'status-completed': work.status === 'Completed',
+            'status-cancelled': work.status === 'Cancelled'
+          }"
+        >
+          <mat-icon class="status-icon">
+            {{
+              work.status === "Assigned"
+                ? "check_circle"
+                : work.status === "NotAssigned"
+                ? "pending"
+                : work.status === "Completed"
+                ? "task_alt"
+                : "cancel"
+            }}
+          </mat-icon>
+          {{ work.status }}
+        </mat-chip>
+      </div>
+    </div>
+  </div>
 
-<ng-template #l>
-  <div class="loading">Loading…</div>
+  <div class="detail-grid">
+    <!-- Customer Information Card -->
+    <mat-card class="info-card customer-card">
+      <div class="card-header">
+        <div class="card-icon customer-icon">
+          <mat-icon>person</mat-icon>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">Customer Information</h3>
+          <p class="card-subtitle">Contact details and service location</p>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="info-row">
+          <div class="info-item">
+            <mat-icon class="info-icon">account_circle</mat-icon>
+            <div class="info-content">
+              <span class="info-label">Full Name</span>
+              <span class="info-value">{{ work.customerName }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon class="info-icon">phone</mat-icon>
+            <div class="info-content">
+              <span class="info-label">Mobile Number</span>
+              <span class="info-value">{{ work.customerMobile }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="work.customerEmail">
+          <div class="info-item full-width">
+            <mat-icon class="info-icon">email</mat-icon>
+            <div class="info-content">
+              <span class="info-label">Email Address</span>
+              <span class="info-value">{{ work.customerEmail }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-row" *ngIf="work.customerAddress">
+          <div class="info-item full-width">
+            <mat-icon class="info-icon">location_on</mat-icon>
+            <div class="info-content">
+              <span class="info-label">Service Address</span>
+              <span class="info-value address">{{ work.customerAddress }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Work Order Details Card -->
+    <mat-card class="info-card details-card">
+      <div class="card-header">
+        <div class="card-icon details-icon">
+          <mat-icon>assignment</mat-icon>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">Work Order Details</h3>
+          <p class="card-subtitle">Service description and requirements</p>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="description-section">
+          <h4 class="description-title">
+            <mat-icon>description</mat-icon>
+            Service Description
+          </h4>
+          <div class="description-content">
+            <p class="description-text">{{ work.description }}</p>
+          </div>
+        </div>
+        <div class="meta-info">
+          <div class="meta-item">
+            <mat-icon>schedule</mat-icon>
+            <span
+              >Scheduled for
+              {{ work.proposedSchedulingDate | date : "EEEE, MMM d, y" }}</span
+            >
+          </div>
+          <div class="meta-item">
+            <mat-icon>tag</mat-icon>
+            <span>Order ID: #{{ work.workOrderId }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Status & Actions Card -->
+    <mat-card class="info-card actions-card">
+      <div class="card-header">
+        <div class="card-icon actions-icon">
+          <mat-icon>settings</mat-icon>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">Actions & Status</h3>
+          <p class="card-subtitle">Manage this work order</p>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="current-status">
+          <h4 class="status-title">Current Status</h4>
+          <div class="status-display">
+            <mat-chip
+              class="large-status-chip"
+              [ngClass]="{
+                'status-assigned': work.status === 'Assigned',
+                'status-not-assigned': work.status === 'NotAssigned',
+                'status-completed': work.status === 'Completed',
+                'status-cancelled': work.status === 'Cancelled'
+              }"
+            >
+              <mat-icon>
+                {{
+                  work.status === "Assigned"
+                    ? "check_circle"
+                    : work.status === "NotAssigned"
+                    ? "pending"
+                    : work.status === "Completed"
+                    ? "task_alt"
+                    : "cancel"
+                }}
+              </mat-icon>
+              {{ work.status }}
+            </mat-chip>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button
+            *ngIf="isNotAssigned()"
+            mat-flat-button
+            class="assign-btn"
+            (click)="goToAssign()"
+          >
+            <mat-icon>person_add</mat-icon>
+            Assign Technician
+          </button>
+
+          <button
+            *ngIf="isAssigned()"
+            mat-flat-button
+            class="reassign-btn"
+            (click)="goToReassign()"
+          >
+            <mat-icon>swap_horiz</mat-icon>
+            Reassign
+          </button>
+
+          <button
+            mat-stroked-button
+            class="edit-btn"
+            (click)="
+              router.navigate(['/work-orders/', work.workOrderId, 'edit'])
+            "
+          >
+            <mat-icon>edit</mat-icon>
+            Edit Order
+          </button>
+
+          <button
+            mat-flat-button
+            class="cancel-btn"
+            *ngIf="canForceCancel()"
+            (click)="onForceCancel()"
+          >
+            <mat-icon>cancel</mat-icon>
+            Force Cancel
+          </button>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="loading-container">
+    <div class="loading-content">
+      <div class="loading-spinner">
+        <mat-progress-spinner
+          diameter="60"
+          mode="indeterminate"
+        ></mat-progress-spinner>
+      </div>
+      <h2 class="loading-title">Loading Work Order</h2>
+      <p class="loading-text">Fetching order details...</p>
+    </div>
+  </div>
 </ng-template>
-
-<style>
-  .muted {
-    color: rgba(0, 0, 0, 0.7);
-    white-space: pre-wrap;
-  }
-  .loading {
-    padding: 24px;
-    text-align: center;
-  }
-</style>

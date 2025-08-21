@@ -2,18 +2,28 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { PageWorkOrderDTO, WorkOrderCreateDTO, WorkOrderDTO, WorkOrderSearchCriteria, WorkOrderUpdateDTO } from '../models/work-order.model';
+import {
+  PageWorkOrderDTO,
+  WorkOrderCreateDTO,
+  WorkOrderDTO,
+  WorkOrderSearchCriteria,
+  WorkOrderUpdateDTO,
+} from '../models/work-order.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WorkOrderService {
-  private apiUrl = `${environment.apiUrl}/work-orders`;
+  private apiUrl = `${environment.apiUrl}/workorders`;
 
   constructor(private http: HttpClient) {}
 
   // Get all work orders with pagination and search criteria
-  getWorkOrders(page: number = 0, size: number = 10, searchCriteria?: WorkOrderSearchCriteria): Observable<PageWorkOrderDTO> {
+  getWorkOrders(
+    page: number = 0,
+    size: number = 10,
+    searchCriteria?: WorkOrderSearchCriteria
+  ): Observable<PageWorkOrderDTO> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
@@ -33,7 +43,7 @@ export class WorkOrderService {
       }
     }
 
-    return this.http.get<PageWorkOrderDTO>(this.apiUrl, { params });
+    return this.http.get<PageWorkOrderDTO>(`${this.apiUrl}/search`, { params });
   }
 
   // Get work order by ID
@@ -47,12 +57,22 @@ export class WorkOrderService {
   }
 
   // Update work order
-  updateWorkOrder(id: number, workOrder: WorkOrderUpdateDTO): Observable<WorkOrderDTO> {
+  updateWorkOrder(
+    id: number,
+    workOrder: WorkOrderUpdateDTO
+  ): Observable<WorkOrderDTO> {
     return this.http.put<WorkOrderDTO>(`${this.apiUrl}/${id}`, workOrder);
   }
 
   // Delete work order
   deleteWorkOrder(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  forceCancel(id: number): Observable<WorkOrderDTO> {
+    return this.http.put<WorkOrderDTO>(
+      `${this.apiUrl}/forceCancel/${id}`,
+      null
+    );
   }
 }

@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../core/services/auth.service';
 import { RegisterRequest } from '../../../core/models/auth.model';
+import { MatCheckbox } from "@angular/material/checkbox";
 
 @Component({
   selector: 'app-register',
@@ -23,8 +24,9 @@ import { RegisterRequest } from '../../../core/models/auth.model';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
-  ],
+    MatProgressSpinnerModule,
+    MatCheckbox
+],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -48,7 +50,7 @@ export class RegisterComponent implements OnInit {
   initForm(): void {
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
+      phone: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
@@ -73,9 +75,10 @@ export class RegisterComponent implements OnInit {
 
     this.isLoading = true;
     const registerData: RegisterRequest = {
-      name: this.registerForm.value.firstName + ' ' + this.registerForm.value.lastName,
+      name: this.registerForm.value.firstName,
       email: this.registerForm.value.email,
-      password: this.registerForm.value.password
+      password: this.registerForm.value.password,
+      phoneNumber: this.registerForm.value.phone
     };
 
     this.authService.register(registerData).subscribe({

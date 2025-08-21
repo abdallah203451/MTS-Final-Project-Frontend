@@ -15,6 +15,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { CreateTechnicianDTO } from '../../../core/models/employee.model';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatChip } from '@angular/material/chips';
 
 @Component({
   selector: 'app-technician-create',
@@ -29,6 +31,8 @@ import { CreateTechnicianDTO } from '../../../core/models/employee.model';
     MatInputModule,
     MatSnackBarModule,
     MatIconModule,
+    MatProgressSpinner,
+    MatChip,
   ],
   templateUrl: './technician-create.component.html',
   styleUrls: ['./technician-create.component.css'],
@@ -41,6 +45,7 @@ export class TechnicianCreateComponent {
     phoneNumber: new FormControl(''),
   });
   saving = false;
+  hidePassword = true;
 
   constructor(
     private svc: EmployeeService,

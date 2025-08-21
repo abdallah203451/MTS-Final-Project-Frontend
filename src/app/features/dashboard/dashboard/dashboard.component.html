@@ -1,152 +1,66 @@
-<div class="dashboard-container">
-  <mat-toolbar color="primary" class="toolbar">
-    <button mat-icon-button (click)="toggleSidenav()">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <span class="toolbar-title">Workforce Management</span>
-    <span class="spacer"></span>
-    <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
-      <mat-icon>account_circle</mat-icon>
-      <span class="username">{{ userName }}</span>
-      <mat-icon>arrow_drop_down</mat-icon>
-    </button>
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>person</mat-icon>
-        <span>Profile</span>
-      </button>
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>exit_to_app</mat-icon>
-        <span>Logout</span>
-      </button>
-    </mat-menu>
-  </mat-toolbar>
+<div class="content-wrapper">
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome back, {{ userName }}! 👋</h1>
+      <p class="hero-subtitle">
+        Manage your workforce efficiently with our modern dashboard. Everything
+        you need is just a click away.
+      </p>
+    </div>
+    <div class="hero-decoration">
+      <div class="floating-element"></div>
+      <div class="floating-element"></div>
+      <div class="floating-element"></div>
+    </div>
+  </div>
 
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav [opened]="isSidenavOpen" mode="side" class="sidenav">
-      <mat-nav-list>
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
-          <mat-icon>dashboard</mat-icon>
-          <span>Dashboard</span>
-        </a>
-        <a
-          mat-list-item
-          routerLink="/work-orders"
-          routerLinkActive="active-link"
-        >
+  <div class="dashboard-grid">
+    <mat-card class="feature-card work-orders-card">
+      <div class="card-header">
+        <div class="card-icon work-orders-icon">
           <mat-icon>assignment</mat-icon>
-          <span>Work Orders</span>
-        </a>
-        <a
-          mat-list-item
-          *ngIf="isAdmin"
-          routerLink="/technicians"
-          routerLinkActive="active-link"
-        >
-          <mat-icon>engineering</mat-icon>
-          <span>Technicians</span>
-        </a>
-      </mat-nav-list>
-    </mat-sidenav>
-
-    <mat-sidenav-content class="content">
-      <div class="dashboard-content">
-        <div class="welcome-section">
-          <h1>Welcome, {{ userName }}!</h1>
-          <p>
-            This is your workforce management dashboard. Use the navigation menu
-            to access different features.
-          </p>
         </div>
-
-        <div class="dashboard-cards">
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>assignment</mat-icon>
-              <mat-card-title>Work Orders</mat-card-title>
-              <mat-card-subtitle>Manage service requests</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>View, create, and manage work orders for your service team.</p>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary" routerLink="/work-orders">
-                VIEW WORK ORDERS
-              </button>
-            </mat-card-actions>
-          </mat-card>
-
-          <mat-card *ngIf="isAdmin" class="dashboard-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>engineering</mat-icon>
-              <mat-card-title>Technicians</mat-card-title>
-              <mat-card-subtitle>Manage your team</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>
-                View and manage technicians, their skills, and availability.
-              </p>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary" routerLink="/technicians">
-                VIEW TECHNICIANS
-              </button>
-            </mat-card-actions>
-          </mat-card>
-
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>schedule</mat-icon>
-              <mat-card-title>Assignments</mat-card-title>
-              <mat-card-subtitle>Schedule work</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>Assign work orders to technicians and manage schedules.</p>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary" routerLink="/work-orders">
-                MANAGE ASSIGNMENTS
-              </button>
-            </mat-card-actions>
-          </mat-card>
+        <div class="card-title-section">
+          <h3 class="card-title">Work Orders</h3>
+          <p class="card-subtitle">Manage service requests</p>
         </div>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>
+      <div class="card-content">
+        <p>
+          Create, track, and manage work orders for your service team with
+          powerful tools and insights.
+        </p>
+      </div>
+      <div class="card-actions">
+        <button mat-flat-button class="primary-btn" routerLink="/work-orders">
+          <mat-icon>arrow_forward</mat-icon>
+          View Orders
+        </button>
+      </div>
+    </mat-card>
 
-<style>
-  .toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-  }
-  .toolbar-title {
-    font-weight: 600;
-    margin-left: 8px;
-  }
-  .spacer {
-    flex: 1 1 auto;
-  }
-  .sidenav-container {
-    height: calc(100vh - 64px);
-  }
-  .sidenav {
-    width: 220px;
-  }
-  .content {
-    padding: 24px;
-  }
-  .dashboard-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px;
-    margin-top: 18px;
-  }
-  .dashboard-card {
-    min-height: 150px;
-  }
-  .welcome-section {
-    margin-bottom: 8px;
-  }
-</style>
+    <mat-card *ngIf="isAdmin" class="feature-card technicians-card">
+      <div class="card-header">
+        <div class="card-icon technicians-icon">
+          <mat-icon>engineering</mat-icon>
+        </div>
+        <div class="card-title-section">
+          <h3 class="card-title">Technicians</h3>
+          <p class="card-subtitle">Manage your team</p>
+        </div>
+      </div>
+      <div class="card-content">
+        <p>
+          Oversee technicians, their skills, availability, and performance
+          metrics in one place.
+        </p>
+      </div>
+      <div class="card-actions">
+        <button mat-flat-button class="secondary-btn" routerLink="/technicians">
+          <mat-icon>group</mat-icon>
+          Manage Team
+        </button>
+      </div>
+    </mat-card>
+  </div>
+</div>
