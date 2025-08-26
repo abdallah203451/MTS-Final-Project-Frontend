@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   hidePassword = true;
   returnUrl: string = '/';
+  PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -62,7 +63,14 @@ export class LoginComponent implements OnInit {
   initForm(): void {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(this.PASSWORD_REGEX),
+        ],
+      ],
     });
   }
 

@@ -78,9 +78,15 @@
             <input
               matInput
               formControlName="customerMobile"
-              placeholder="+1 (555) 123-4567"
+              placeholder="01XXXXXXXXX"
             />
             <mat-icon matPrefix>phone</mat-icon>
+            <mat-error *ngIf="form.get('customerMobile')?.hasError('required')">
+              Mobile number is required
+            </mat-error>
+            <mat-error *ngIf="form.get('customerMobile')?.hasError('pattern')">
+              Mobile must start with 010, 011, 012 or 015 and be 11 digits
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">

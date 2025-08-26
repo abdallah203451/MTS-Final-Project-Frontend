@@ -4,7 +4,7 @@ import { AssignmentService } from '../../../core/services/assignment.service';
 import { EmployeeService } from '../../../core/services/employee.service';
 import { WorkOrderService } from '../../../core/services/work-order.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { EmployeeDTO } from '../../../core/models/employee.model';
+import { AvailableEmployeeDTO } from '../../../core/models/employee.model';
 import {
   AssignmentCreateDTO,
   ReassignmentDTO,
@@ -17,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { WorkOrderDTO } from '../../../core/models/work-order.model';
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-work-order-assignment',
@@ -32,14 +32,14 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
     MatSnackBarModule,
     MatFormFieldModule,
     MatIconModule,
-    MatProgressSpinner
-],
+    MatProgressSpinner,
+  ],
   templateUrl: './work-order-assignment.component.html',
   styleUrls: ['./work-order-assignment.component.css'],
 })
 export class WorkOrderAssignmentComponent implements OnInit {
   workOrderId!: number;
-  technicians: EmployeeDTO[] = [];
+  technicians: AvailableEmployeeDTO[] = [];
   selectedTechId?: number;
   assigning = false;
 
@@ -48,6 +48,8 @@ export class WorkOrderAssignmentComponent implements OnInit {
 
   // optional loaded work order for fallback/status check
   workOrder?: WorkOrderDTO;
+
+  loadingTechnicians = false;
 
   constructor(
     private assignmentSvc: AssignmentService,
@@ -60,41 +62,93 @@ export class WorkOrderAssignmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.workOrderId = Number(this.route.snapshot.paramMap.get('id'));
-    // read query param mode
+
     const qpMode = this.route.snapshot.queryParamMap.get('mode');
     if (qpMode === 'reassign') {
       this.mode = 'reassign';
     } else if (qpMode === 'assign') {
       this.mode = 'assign';
-    } else {
-      // fallback: load work order to decide based on status
-      this.workOrderSvc.getWorkOrderById(this.workOrderId).subscribe({
-        next: (w) => {
-          this.workOrder = w;
+    }
+
+    // Always load the work order since we need proposedSchedulingDate
+    this.workOrderSvc.getWorkOrderById(this.workOrderId).subscribe({
+      next: (w) => {
+        this.workOrder = w;
+
+        // If mode wasn't explicitly provided, decide by status
+        if (!qpMode) {
           if (w.status === 'Assigned' || w.status === 'InProgress') {
             this.mode = 'reassign';
           } else {
             this.mode = 'assign';
           }
-        },
-        error: (err) => {
-          console.warn(
-            'Could not fetch work order for mode fallback, defaulting to assign',
-            err
-          );
-          this.mode = 'assign';
-        },
-      });
-    }
+        }
 
-    this.loadTechnicians();
+        const dateToSend = this.getDateToSend(w?.proposedSchedulingDate);
+        this.loadTechnicians(dateToSend);
+      },
+      error: (err) => {
+        console.warn(
+          "Could not fetch work order for mode fallback or proposed date; loading technicians using today's date",
+          err
+        );
+        const today = this.formatDateYYYYMMDD(new Date());
+        this.loadTechnicians(today);
+      },
+    });
   }
 
-  loadTechnicians(): void {
-    this.employeeSvc.getAllEmployees().subscribe({
-      next: (list) =>
-        (this.technicians = list.filter((x) => x.role === 'Technician')),
-      error: (err) => console.error(err),
+  /**
+   * Determine the date string to send to the API.
+   * - If input is a valid YYYY-MM-DD -> return it as-is.
+   * - If input is an ISO datetime or other parseable string -> take its date part (local).
+   * - If input is falsy/invalid -> fallback to today's date (YYYY-MM-DD).
+   */
+  private getDateToSend(proposedSchedulingDate?: string): string {
+    const formatted = this.formatStringToYYYYMMDD(proposedSchedulingDate);
+    if (formatted) return formatted;
+
+    // fallback: today's date
+    return this.formatDateYYYYMMDD(new Date());
+  }
+
+  private formatStringToYYYYMMDD(input?: string): string | undefined {
+    if (!input) return undefined;
+
+    // already yyyy-mm-dd?
+    if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return input;
+
+    // try parse (handles ISO datetimes)
+    const parsed = new Date(input);
+    if (!isNaN(parsed.getTime())) {
+      return this.formatDateYYYYMMDD(parsed);
+    }
+
+    return undefined;
+  }
+
+  private formatDateYYYYMMDD(d: Date): string {
+    const y = d.getFullYear();
+    const m = (d.getMonth() + 1).toString().padStart(2, '0');
+    const dd = d.getDate().toString().padStart(2, '0');
+    return `${y}-${m}-${dd}`;
+  }
+
+  loadTechnicians(date: string): void {
+    this.loadingTechnicians = true;
+
+    // Uses your service method exactly as provided:
+    // getAvailableEmployees(date: string): Observable<AvailableEmployeeDTO[]>
+    this.employeeSvc.getAvailableEmployees(date).subscribe({
+      next: (list) => {
+        this.technicians = list;
+        this.loadingTechnicians = false;
+      },
+      error: (err) => {
+        console.error('Failed to load available technicians', err);
+        this.loadingTechnicians = false;
+        this.technicians = [];
+      },
     });
   }
 

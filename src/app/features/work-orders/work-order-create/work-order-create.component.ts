@@ -20,7 +20,7 @@ import { WorkOrderCreateDTO } from '../../../core/models/work-order.model';
 import { AssignmentService } from '../../../core/services/assignment.service';
 import { MatOption } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-work-order-create',
@@ -37,20 +37,23 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
     MatIconModule,
     MatOption,
     MatSelectModule,
-    MatProgressSpinner
-],
+    MatProgressSpinner,
+  ],
   templateUrl: './work-order-create.component.html',
   styleUrls: ['./work-order-create.component.css'],
 })
 export class WorkOrderCreateComponent implements OnInit {
+  PHONE_REGEX = /^(010|011|012|015)\d{8}$/;
   form = new FormGroup({
     title: new FormControl('', Validators.required),
     description: new FormControl(''),
     customerName: new FormControl('', Validators.required),
-    customerMobile: new FormControl('', Validators.required),
+    customerMobile: new FormControl('', [
+      Validators.required,
+      Validators.pattern(this.PHONE_REGEX),
+    ]),
     customerEmail: new FormControl('', Validators.email),
     customerAddress: new FormControl(''),
-    // keep date input but add custom validator
     proposedSchedulingDate: new FormControl('', [
       Validators.required,
       this.dateWithinNext14DaysValidator,

@@ -17,8 +17,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { WorkOrderUpdateDTO } from '../../../core/models/work-order.model';
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
-import { MatChip } from "@angular/material/chips";
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatChip } from '@angular/material/chips';
 
 @Component({
   selector: 'app-work-order-edit',
@@ -35,17 +35,23 @@ import { MatChip } from "@angular/material/chips";
     MatIconModule,
     MatSelectModule,
     MatProgressSpinner,
-    MatChip
-],
+    MatChip,
+  ],
   templateUrl: './work-order-edit.component.html',
   styleUrls: ['./work-order-edit.component.css'],
 })
 export class WorkOrderEditComponent implements OnInit {
+  PHONE_REGEX = /^(010|011|012|015)\d{8}$/;
+
+  // in form definition
   form = new FormGroup({
     title: new FormControl('', Validators.required),
     description: new FormControl(''),
     customerName: new FormControl('', Validators.required),
-    customerMobile: new FormControl('', Validators.required),
+    customerMobile: new FormControl('', [
+      Validators.required,
+      Validators.pattern(this.PHONE_REGEX),
+    ]),
     customerEmail: new FormControl('', Validators.email),
     customerAddress: new FormControl(''),
     proposedSchedulingDate: new FormControl('', Validators.required),

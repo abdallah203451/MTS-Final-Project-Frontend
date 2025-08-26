@@ -9,7 +9,7 @@ import { AssignmentService } from '../../../core/services/assignment.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChip } from '@angular/material/chips';
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-work-order-detail',
@@ -22,8 +22,8 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
     MatSnackBarModule,
     MatIconModule,
     MatChip,
-    MatProgressSpinner
-],
+    MatProgressSpinner,
+  ],
   templateUrl: './work-order-detail.component.html',
   styleUrls: ['./work-order-detail.component.css'],
 })

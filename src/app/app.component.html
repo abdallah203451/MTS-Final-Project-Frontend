@@ -24,18 +24,14 @@
           [matMenuTriggerFor]="userMenu"
           class="user-menu-button"
         >
-          <div class="user-avatar">
+          <!-- <div class="user-avatar">
             <mat-icon>account_circle</mat-icon>
-          </div>
+          </div> -->
           <span class="username">{{ userName }}</span>
           <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
         </button>
 
         <mat-menu #userMenu="matMenu" class="user-menu">
-          <button mat-menu-item class="menu-item">
-            <mat-icon>person</mat-icon>
-            <span>Profile</span>
-          </button>
           <button mat-menu-item (click)="logout()" class="menu-item">
             <mat-icon>logout</mat-icon>
             <span>Logout</span>
